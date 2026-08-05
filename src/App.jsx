@@ -1,16 +1,19 @@
-import { mockAlerts, mockTimelineData } from "./api/mockData";
+// src/App.jsx
+import { useState } from "react";
+import { mockAlerts } from "./api/mockData";
 import {
   calculateMTTR,
   calculateMTTA,
   calculateSLACompliance,
 } from "./utils/formatters";
 import MetricCards from "./components/MetricCards/MetricCards";
+import AlertFeed from "./components/AlertFeed/AlertFeed";
 
 function App() {
-  const activeAlerts = mockAlerts.filter((a) => a.status !== "Resolved");
+  const [selectedAlert, setSelectedAlert] = useState(null);
 
   const metrics = {
-    activeCount: activeAlerts.length,
+    activeCount: mockAlerts.filter((a) => a.status !== "Resolved").length,
     mtta: calculateMTTA(mockAlerts),
     mttr: calculateMTTR(mockAlerts),
     sla: calculateSLACompliance(mockAlerts),
@@ -36,6 +39,20 @@ function App() {
         Azure Incident Dashboard
       </h1>
       <MetricCards metrics={metrics} />
+      <AlertFeed alerts={mockAlerts} onAlertClick={setSelectedAlert} />
+      {selectedAlert && (
+        <div
+          style={{
+            marginTop: "16px",
+            padding: "16px",
+            background: "#fff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "8px",
+          }}
+        >
+          <strong>Selected:</strong> {selectedAlert.name}
+        </div>
+      )}
     </div>
   );
 }
