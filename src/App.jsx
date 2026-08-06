@@ -8,6 +8,7 @@ import {
 } from "./utils/formatters";
 import MetricCards from "./components/MetricCards/MetricCards";
 import AlertFeed from "./components/AlertFeed/AlertFeed";
+import AlertDrawer from "./components/AlertDrawer/AlertDrawer";
 
 function App() {
   const [selectedAlert, setSelectedAlert] = useState(null);
@@ -40,19 +41,10 @@ function App() {
       </h1>
       <MetricCards metrics={metrics} />
       <AlertFeed alerts={mockAlerts} onAlertClick={setSelectedAlert} />
-      {selectedAlert && (
-        <div
-          style={{
-            marginTop: "16px",
-            padding: "16px",
-            background: "#fff",
-            border: "1px solid #e2e8f0",
-            borderRadius: "8px",
-          }}
-        >
-          <strong>Selected:</strong> {selectedAlert.name}
-        </div>
-      )}
+      <AlertDrawer
+        alert={selectedAlert}
+        onClose={() => setSelectedAlert(null)}
+      />
     </div>
   );
 }
