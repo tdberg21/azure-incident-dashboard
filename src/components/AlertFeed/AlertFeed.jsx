@@ -1,6 +1,8 @@
 // src/components/AlertFeed/AlertFeed.jsx
+import { useState, useMemo } from "react";
 import { sortBySeverity } from "../../utils/severity";
 import AlertRow from "./AlertRow";
+import FilterBar from "./FilterBar";
 
 const COLUMNS = [
   "Severity",
@@ -13,7 +15,32 @@ const COLUMNS = [
 ];
 
 function AlertFeed({ alerts, onAlertClick }) {
-  const sorted = sortBySeverity(alerts);
+  const [filters, setFilters] = useState({
+    severity: "All",
+    status: "All",
+    resourceGroup: "All",
+  });
+
+  const resourceGroups = useMemo(() => {
+    return [...new Set(alerts.map((a) => a.resourceGroup))].sort();
+  }, [alerts]);
+
+  const filtered = useMemo(() => {
+    return alerts.filter((alert) => {
+      if (filters.severity !== "All" && alert.severity !== filters.severity)
+        return false;
+      if (filters.status !== "All" && alert.status !== filters.status)
+        return false;
+      if (
+        filters.resourceGroup !== "All" &&
+        alert.resourceGroup !== filters.resourceGroup
+      )
+        return false;
+      return true;
+    });
+  }, [alerts, filters]);
+
+  const sorted = sortBySeverity(filtered);
 
   return (
     <div
@@ -42,10 +69,16 @@ function AlertFeed({ alerts, onAlertClick }) {
               color: "#64748b",
             }}
           >
-            {sorted.length} total
+            {sorted.length} of {alerts.length} shown
           </span>
         </h2>
       </div>
+
+      <FilterBar
+        filters={filters}
+        onChange={setFilters}
+        resourceGroups={resourceGroups}
+      />
 
       <div style={{ overflowX: "auto" }}>
         <table
@@ -80,9 +113,25 @@ function AlertFeed({ alerts, onAlertClick }) {
             </tr>
           </thead>
           <tbody>
-            {sorted.map((alert) => (
-              <AlertRow key={alert.id} alert={alert} onClick={onAlertClick} />
-            ))}
+            {sorted.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={7}
+                  style={{
+                    padding: "32px",
+                    textAlign: "center",
+                    color: "#94a3b8",
+                    fontSize: "14px",
+                  }}
+                >
+                  No alerts match the current filters
+                </td>
+              </tr>
+            ) : (
+              sorted.map((alert) => (
+                <AlertRow key={alert.id} alert={alert} onClick={onAlertClick} />
+              ))
+            )}
           </tbody>
         </table>
       </div>
