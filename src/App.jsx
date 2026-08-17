@@ -5,6 +5,7 @@ import {
   calculateMTTA,
   calculateSLACompliance,
 } from "./utils/formatters";
+import { useAuth } from "./hooks/useAuth";
 import { useAlerts } from "./hooks/useAlerts";
 import MetricCards from "./components/MetricCards/MetricCards";
 import AlertFeed from "./components/AlertFeed/AlertFeed";
@@ -15,12 +16,17 @@ import MetricsExplorer from "./components/MetricsExplorer/MetricsExplorer";
 import LoadingSpinner from "./components/shared/LoadingSpinner";
 
 const TABS = ["Dashboard", "Resource Health", "Metrics Explorer"];
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
 
 function App() {
   const [selectedAlert, setSelectedAlert] = useState(null);
   const [activeTab, setActiveTab] = useState("Dashboard");
 
-  const { alerts, loading, error, lastUpdated, refresh } = useAlerts(30000);
+  const { account, token, loading: authLoading, login, logout } = useAuth();
+  const { alerts, loading, error, lastUpdated, refresh } = useAlerts(
+    token,
+    30000,
+  );
 
   const metrics = {
     activeCount: alerts.filter((a) => a.status !== "Resolved").length,
@@ -28,6 +34,67 @@ function App() {
     mttr: calculateMTTR(alerts),
     sla: calculateSLACompliance(alerts),
   };
+
+  // Show login screen if not in demo mode and not authenticated
+  if (!DEMO_MODE && !authLoading && !account) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          background: "#f8fafc",
+          fontFamily: "system-ui, sans-serif",
+        }}
+      >
+        <div
+          style={{
+            background: "#ffffff",
+            border: "1px solid #e2e8f0",
+            borderRadius: "12px",
+            padding: "48px",
+            textAlign: "center",
+            maxWidth: "400px",
+          }}
+        >
+          <div style={{ fontSize: "32px", marginBottom: "16px" }}>☁️</div>
+          <h1
+            style={{
+              fontSize: "20px",
+              fontWeight: "700",
+              color: "#0f172a",
+              marginBottom: "8px",
+            }}
+          >
+            Azure Incident Dashboard
+          </h1>
+          <p
+            style={{ fontSize: "14px", color: "#64748b", marginBottom: "32px" }}
+          >
+            Sign in with your Azure account to view live incident data.
+          </p>
+          <button
+            onClick={login}
+            style={{
+              padding: "12px 24px",
+              fontSize: "14px",
+              fontWeight: "600",
+              color: "#ffffff",
+              background: "#0078d4",
+              border: "none",
+              borderRadius: "6px",
+              cursor: "pointer",
+              width: "100%",
+            }}
+          >
+            Sign in with Microsoft
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -86,7 +153,6 @@ function App() {
           </div>
         </div>
 
-        {/* Last updated + refresh */}
         <div
           style={{
             display: "flex",
@@ -121,10 +187,40 @@ function App() {
           >
             ↻ Refresh
           </button>
+          {!DEMO_MODE && account && (
+            <button
+              onClick={logout}
+              style={{
+                padding: "6px 12px",
+                fontSize: "12px",
+                color: "#64748b",
+                background: "#ffffff",
+                border: "1px solid #e2e8f0",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              Sign out
+            </button>
+          )}
+          {DEMO_MODE && (
+            <span
+              style={{
+                padding: "4px 8px",
+                background: "#fefce8",
+                border: "1px solid #fef08a",
+                borderRadius: "4px",
+                fontSize: "11px",
+                fontWeight: "600",
+                color: "#ca8a04",
+              }}
+            >
+              DEMO
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Error banner */}
       {error && (
         <div
           style={{
@@ -139,7 +235,6 @@ function App() {
         </div>
       )}
 
-      {/* Page content */}
       <div style={{ padding: "24px" }}>
         {loading ? (
           <LoadingSpinner />
@@ -152,11 +247,9 @@ function App() {
                 <AlertFeed alerts={alerts} onAlertClick={setSelectedAlert} />
               </>
             )}
-
             {activeTab === "Resource Health" && (
               <ResourceGrid resources={mockResources} alerts={alerts} />
             )}
-
             {activeTab === "Metrics Explorer" && <MetricsExplorer />}
           </>
         )}
