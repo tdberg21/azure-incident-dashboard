@@ -84,7 +84,7 @@ const DEMO_MODE = false
 ├── components/   # AlertFeed, AlertDrawer, MetricCards,
 │                 # ResourceGrid, MetricsExplorer, Charts
 ├── hooks/        # useAlerts (polling), useAuth (MSAL)
-└── utils/        # formatters (MTTR, MTTA, SLA), severity config```
+└── utils/        # formatters (MTTR, MTTA, SLA), severity config
 
 
 **Key decisions:**
