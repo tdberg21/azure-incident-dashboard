@@ -10,8 +10,9 @@ import AlertFeed from "./components/AlertFeed/AlertFeed";
 import AlertDrawer from "./components/AlertDrawer/AlertDrawer";
 import ResolutionChart from "./components/Charts/ResolutionChart";
 import ResourceGrid from "./components/ResourceGrid/ResourceGrid";
+import MetricsExplorer from "./components/MetricsExplorer/MetricsExplorer";
 
-const TABS = ["Dashboard", "Resource Health"];
+const TABS = ["Dashboard", "Resource Health", "Metrics Explorer"];
 
 function App() {
   const [selectedAlert, setSelectedAlert] = useState(null);
@@ -93,6 +94,8 @@ function App() {
         {activeTab === "Resource Health" && (
           <ResourceGrid resources={mockResources} alerts={mockAlerts} />
         )}
+
+        {activeTab === "Metrics Explorer" && <MetricsExplorer />}
       </div>
 
       <AlertDrawer
