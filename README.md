@@ -78,14 +78,15 @@ const DEMO_MODE = false
 
 ## Architecture
 
-```src/
+```
+src/
 ├── api/          # Azure Monitor API calls + mock data
 ├── auth/         # MSAL configuration
 ├── components/   # AlertFeed, AlertDrawer, MetricCards,
 │                 # ResourceGrid, MetricsExplorer, Charts
 ├── hooks/        # useAlerts (polling), useAuth (MSAL)
 └── utils/        # formatters (MTTR, MTTA, SLA), severity config
-
+```
 
 **Key decisions:**
 - **Demo mode by default** — interviewers can run it in 3 commands with no Azure setup
