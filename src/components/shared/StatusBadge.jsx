@@ -1,4 +1,3 @@
-// src/components/shared/StatusBadge.jsx
 import { STATUS_CONFIG } from "../../utils/severity";
 
 function StatusBadge({ status }) {

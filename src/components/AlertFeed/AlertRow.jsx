@@ -1,4 +1,3 @@
-// src/components/AlertFeed/AlertRow.jsx
 import SeverityBadge from "../shared/SeverityBadge";
 import StatusBadge from "../shared/StatusBadge";
 import { formatTimeAgo } from "../../utils/formatters";

@@ -1,4 +1,3 @@
-// src/components/shared/SeverityBadge.jsx
 import { getSeverity } from "../../utils/severity";
 
 function SeverityBadge({ severity }) {

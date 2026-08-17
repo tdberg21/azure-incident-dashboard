@@ -1,5 +1,3 @@
-// src/utils/severity.js
-
 export const SEVERITY_CONFIG = {
   Sev0: {
     label: "Sev 0",

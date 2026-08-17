@@ -1,5 +1,3 @@
-// src/components/MetricCards/MetricCards.jsx
-
 function MetricCard({ label, value, subtitle, valueColor }) {
   return (
     <div

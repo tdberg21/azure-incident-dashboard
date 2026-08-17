@@ -1,6 +1,5 @@
-// src/App.jsx
 import { useState } from "react";
-import { mockAlerts } from "./api/mockData";
+import { mockAlerts, mockTimelineData } from "./api/mockData";
 import {
   calculateMTTR,
   calculateMTTA,
@@ -9,6 +8,7 @@ import {
 import MetricCards from "./components/MetricCards/MetricCards";
 import AlertFeed from "./components/AlertFeed/AlertFeed";
 import AlertDrawer from "./components/AlertDrawer/AlertDrawer";
+import ResolutionChart from "./components/Charts/ResolutionChart";
 
 function App() {
   const [selectedAlert, setSelectedAlert] = useState(null);
@@ -40,6 +40,7 @@ function App() {
         Azure Incident Dashboard
       </h1>
       <MetricCards metrics={metrics} />
+      <ResolutionChart data={mockTimelineData} />
       <AlertFeed alerts={mockAlerts} onAlertClick={setSelectedAlert} />
       <AlertDrawer
         alert={selectedAlert}

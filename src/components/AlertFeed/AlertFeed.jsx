@@ -1,4 +1,3 @@
-// src/components/AlertFeed/AlertFeed.jsx
 import { useState, useMemo } from "react";
 import { sortBySeverity } from "../../utils/severity";
 import AlertRow from "./AlertRow";

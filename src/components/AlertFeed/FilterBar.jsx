@@ -1,5 +1,3 @@
-// src/components/AlertFeed/FilterBar.jsx
-
 const SEVERITIES = ["All", "Sev0", "Sev1", "Sev2", "Sev3", "Sev4"];
 const STATUSES = ["All", "New", "Acknowledged", "Resolved"];
 

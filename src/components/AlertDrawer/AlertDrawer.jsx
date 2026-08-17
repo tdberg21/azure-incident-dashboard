@@ -1,4 +1,3 @@
-// src/components/AlertDrawer/AlertDrawer.jsx
 import SeverityBadge from "../shared/SeverityBadge";
 import StatusBadge from "../shared/StatusBadge";
 import { formatDateTime, formatDuration } from "../../utils/formatters";
