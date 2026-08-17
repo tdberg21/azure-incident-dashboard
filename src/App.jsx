@@ -16,7 +16,7 @@ import MetricsExplorer from "./components/MetricsExplorer/MetricsExplorer";
 import LoadingSpinner from "./components/shared/LoadingSpinner";
 
 const TABS = ["Dashboard", "Resource Health", "Metrics Explorer"];
-const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
+const DEMO_MODE = true;
 
 function App() {
   const [selectedAlert, setSelectedAlert] = useState(null);
