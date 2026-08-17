@@ -1,16 +1,110 @@
-# React + Vite
+# Azure Incident Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A real-time cloud operations dashboard built with React and the Azure Monitor REST API. Gives support engineers and SREs a unified view of active alerts, resource health, and infrastructure metrics.
 
-Currently, two official plugins are available:
+**[Live Demo](https://purple-rock-0247a5d10.7.azurestaticapps.net)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## What it does
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dashboard** — Live alert feed with severity triage, MTTA/MTTR/SLA metrics, and a 14-day resolution timeline
+- **Alert Drawer** — Click any alert to see full incident detail, timestamps, duration calculations, and action buttons
+- **Resource Health** — Grid view of monitored resources with health status and active alert counts
+- **Metrics Explorer** — Interactive line charts for CPU, memory, request count, and more across any resource and time range
+- **Real-time polling** — Alerts refresh every 30 seconds with a manual refresh option
+- **MSAL Auth** — Azure AD authentication with silent token renewal for live data mode
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Screenshots
+
+![Dashboard](./screenshots/dashboard.png)
+
+---
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Frontend | React 18, Vite |
+| Charts | Recharts |
+| Auth | MSAL (@azure/msal-browser, @azure/msal-react) |
+| API | Azure Monitor REST API, Azure Resource Health API |
+| Deploy | Azure Static Web Apps (free tier) |
+
+---
+
+## Run locally (demo mode — no Azure account needed)
+
+```bash
+git clone git@github.com:tdberg21/azure-incident-dashboard.git
+cd azure-incident-dashboard
+npm install
+npm run dev
+```
+
+Open `http://localhost:5173` — runs with mock data by default.
+
+---
+
+## Run with live Azure data
+
+**1. Create an Azure AD app registration**
+
+Azure Portal → App registrations → New registration
+Name: azure-incident-dashboard
+Redirect URI: Single-page application → http://localhost:5173
+API permissions: Azure Service Management → user_impersonation
+
+
+**2. Configure environment**
+
+```bash
+# .env.local
+VITE_AZURE_CLIENT_ID=your-client-id
+VITE_AZURE_TENANT_ID=your-tenant-id
+VITE_AZURE_SUBSCRIPTION_ID=your-subscription-id
+```
+
+**3. Switch to live mode**
+
+In `src/hooks/useAlerts.js` and `src/App.jsx`, set:
+```js
+const DEMO_MODE = false
+```
+
+---
+
+## Architecture
+
+src/
+├── api/ # Azure Monitor API calls + mock data
+├── auth/ # MSAL configuration
+├── components/ # AlertFeed, AlertDrawer, MetricCards,
+│ # ResourceGrid, MetricsExplorer, Charts
+├── hooks/ # useAlerts (polling), useAuth (MSAL)
+└── utils/ # formatters (MTTR, MTTA, SLA), severity config
+
+
+**Key decisions:**
+- **Demo mode by default** — interviewers can run it in 3 commands with no Azure setup
+- **Polling over WebSockets** — simpler to deploy; WebSocket upgrade is the obvious next step
+- **Mock data mirrors real API shape** — swapping to live data requires one flag change, not a rewrite
+- **Severity/status config centralized** — all colors defined once in `severity.js`, never hardcoded in components
+
+---
+
+## What I'd add next
+
+- WebSocket connection to Azure Event Grid for push-based alert updates
+- Email/Teams notifications via Azure Logic Apps
+- Multi-subscription support
+- Historical MTTR trend with moving average
+- Export incidents to CSV/PDF
+
+---
+
+## Related experience
+
+Built to mirror the alert triage workflows I ran daily as a Technical Support Engineer L3 at Teknowledge, where I owned Azure incident escalations for enterprise accounts.
